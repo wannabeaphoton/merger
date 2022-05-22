@@ -36,7 +36,6 @@ public class RayTest : MonoBehaviour
                 Ray point = cam.ScreenPointToRay(new Vector3(touch.position.x, touch.position.y, cam.nearClipPlane));
                 Debug.DrawRay(point.origin, point.direction * 100f, Color.red);
                 bool _unit = Physics.Raycast(point, out unit, 50f, unitMask);
-                //bool _cellray = Physics.Raycast(new Ray(point.origin, Vector3.down * 5f), out _cell, 3f, cellMask);
                 if (_unit && touch.phase == TouchPhase.Began)
                 {
                     EcsWorld _world = WorldHandler.GetMainWorld();
@@ -51,11 +50,6 @@ public class RayTest : MonoBehaviour
                     Animator anim = _drag.rigidbody.gameObject.GetComponentInChildren<Animator>();
                     anim.Play("falling_idle");
                     Debug.Log(_drag.originposition);
-                    
-                    
-
-                    
-
                 }
             }
 

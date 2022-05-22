@@ -15,7 +15,6 @@ namespace Client
         readonly EcsFilterInject<Inc<Drag, MergeCheckComponent>> _dragfilter = default;
         readonly EcsPoolInject<OccupiedComponent> _occupiedpool = default;
         readonly EcsCustomInject<Config> _config = default;
-        private Vector3 _scalechange = new Vector3(0.5f,0.5f,0.5f);
         private Hashtable _map = new Hashtable();
 
         public void Run(EcsSystems systems)

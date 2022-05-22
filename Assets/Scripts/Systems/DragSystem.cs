@@ -15,14 +15,12 @@ namespace Client {
                 LayerMask _layer = 1 << 6;
                 RaycastHit _checker;
 
-
                 foreach (int entity in _filter)
                 {
                     ref Drag _drag = ref _pool.Get(entity);
                     _drag.rigidbody.useGravity = false;
                     Vector3 position = new Vector3(_touch.position.x, _touch.position.y, cam.WorldToScreenPoint(_drag.rigidbody.transform.position).z);
                     Vector3 worldPosition = cam.ScreenToWorldPoint(position);
-                    //_drag.rigidbody.position = new Vector3(worldPosition.x, 1.5f, worldPosition.z);
                     _drag.rigidbody.MovePosition(new Vector3(worldPosition.x, 1.5f, worldPosition.z));
                     Debug.DrawRay(_drag.rigidbody.position, Vector3.down * 5f, Color.green);
                     if (Physics.Raycast(new Ray(_drag.rigidbody.position, Vector3.down * 5f), out _checker, 3f, _layer))
@@ -35,9 +33,7 @@ namespace Client {
                         Debug.Log(_drag.mergecheck.collider.transform.position);
                     }
                 }
-                
             }
-            // add your run code here.
         }
     }
 }
