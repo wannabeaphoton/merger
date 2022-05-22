@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344c96d2b524b6a42bc46afc56f7b8e6, type: 3}
+  m_Name: Config
+  m_EditorClassIdentifier: 
+  boss: {fileID: 1688350221225350974, guid: 859c2639f8cb2394a99d6bd57f46592f, type: 3}
+  prefab: {fileID: 4323952557255842536, guid: e2267750d6cfc2647b8ba67ebb4c4e99, type: 3}
+  meleePrefab: {fileID: 4663102749220872621, guid: e2b3b4d182acbac49b57c18cfa01bd5f, type: 3}
+  rangedPrefab: {fileID: 3992291230403015143, guid: 9584a3a0e0b56274f91a498bba5e511b, type: 3}
+  projectile: {fileID: 5909666542805671778, guid: b0cca04c794ce16409e832532e265803, type: 3}
+  gridWidth: 3
+  gridLength: 3
