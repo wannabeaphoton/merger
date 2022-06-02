@@ -6,7 +6,7 @@ namespace  Client
 {
     struct MergeComponent 
     {
-        public string tag;
+        
 
     }
 

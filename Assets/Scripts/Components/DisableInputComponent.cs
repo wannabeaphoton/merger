@@ -2,12 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Client
-{
-    struct ReoccupyComponent
+namespace Client 
+{ 
+    struct DisableInputComponent
     {
-        public Vector3 reoccupy;
+
     }
-
 }
-

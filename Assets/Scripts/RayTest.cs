@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Leopotam.EcsLite;
 using Voody.UniLeo.Lite;
-// Convert the 2D position of the mouse into a
-// 3D position.  Display these on the game window.
+
 
 namespace Client { 
 public class RayTest : MonoBehaviour
     {
         private Camera cam;
         private Touch touch;
-        private RaycastHit unit, _cell;
+        private RaycastHit _target, _cell;
         private int unitMask = 1 << 3;
         private int cellMask = 1 << 6;
 
@@ -35,21 +34,31 @@ public class RayTest : MonoBehaviour
                 touch = Input.GetTouch(0);
                 Ray point = cam.ScreenPointToRay(new Vector3(touch.position.x, touch.position.y, cam.nearClipPlane));
                 Debug.DrawRay(point.origin, point.direction * 100f, Color.red);
-                bool _unit = Physics.Raycast(point, out unit, 50f, unitMask);
-                if (_unit && touch.phase == TouchPhase.Began)
+                bool _ishit = Physics.Raycast(point, out _target, 50f, unitMask);
+                if (_ishit && touch.phase == TouchPhase.Began)
                 {
                     EcsWorld _world = WorldHandler.GetMainWorld();
-                    var _entity = _world.NewEntity();
-                    var _dragpool = _world.GetPool<Drag>();
-                    var _reoccupypool = _world.GetPool<ReoccupyComponent>();
-                    _dragpool.Add(_entity);
-                    _reoccupypool.Add(_entity);
-                    ref Drag _drag = ref _dragpool.Get(_entity);
-                    _drag.rigidbody = unit.rigidbody;
-                    _drag.originposition = new Vector3(unit.rigidbody.position.x, 0f, unit.rigidbody.position.z);
-                    Animator anim = _drag.rigidbody.gameObject.GetComponentInChildren<Animator>();
-                    anim.Play("falling_idle");
-                    Debug.Log(_drag.originposition);
+                    var _draggedpool = _world.GetPool<DraggedComponent>();
+                    var _unoccupypool = _world.GetPool<UnoccupyComponent>();
+                    var _filter = _world.Filter<UnitComponent>().End();
+                    var _unitpool = _world.GetPool<UnitComponent>();
+                    var _isanimpool = _world.GetPool<IsAnimatedComponent>();
+                    Debug.Log(_target.collider.transform);
+                    foreach (int _unitentity in _filter)
+                    {
+                        ref var _unit = ref _unitpool.Get(_unitentity);
+                        if(_target.collider.transform.position == _unit.position)
+                        {
+                            _unit.model.GetComponent<Rigidbody>().useGravity = false;
+                            _unit.anim.Play("falling_idle");
+                            _draggedpool.Add(_unitentity);
+                            _isanimpool.Add(_unitentity);
+                            ref var _unocc = ref _unoccupypool.Add(_world.NewEntity());
+                            _unocc.unoccupy = _unit.position;
+                            
+                        }
+                    }
+                    
                 }
             }
 

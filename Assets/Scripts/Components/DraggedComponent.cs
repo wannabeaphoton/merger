@@ -4,10 +4,8 @@ using UnityEngine;
 
 namespace Client
 {
-    struct ReoccupyComponent
+    struct DraggedComponent
     {
-        public Vector3 reoccupy;
+        
     }
-
 }
-

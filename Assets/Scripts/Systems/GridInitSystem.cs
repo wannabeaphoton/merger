@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace Client {
     sealed class GridInitSystem : IEcsInitSystem {
@@ -21,13 +22,15 @@ namespace Client {
                 Debug.Log(i + "gives" +_map["T"+i].ToString());
             }
             _map.Add("T4", "T4");
-            _config.Value.tagmap = _map;
+            
             
             var _bossentity = _bosspool.Value.GetWorld().NewEntity();
             ref var _boss = ref _bosspool.Value.Add(_bossentity);
             _boss.model = (GameObject) Object.Instantiate(_config.Value.boss, _config.Value.boss.transform.position, Quaternion.Euler(0, 180, 0));
             _boss.animator = _boss.model.GetComponentInChildren<Animator>();
             _boss.health = 100;
+            _boss.healthbar = GameObject.Find("HealthBar");
+            _boss.healthbar.GetComponent<Image>().material.SetFloat("_health", 0.01f * _boss.health);
 
             Vector3 position = new Vector3(1, 0, 1);
             for (var w = 0; w < _config.Value.gridWidth; w++)
@@ -36,9 +39,9 @@ namespace Client {
                 {
                     var cellEntity = _pool.Value.GetWorld().NewEntity();
                     ref var cell = ref _pool.Value.Add(cellEntity);
-                    var cellGO = (GameObject)Object.Instantiate(_config.Value.prefab, position, Quaternion.identity*_rotate);
+                    var go = (GameObject)Object.Instantiate(_config.Value.prefab, position, Quaternion.identity*_rotate);
                     _rotate *= Quaternion.Euler(0, 90, 0);
-                    cell.cell = cellGO;
+                    cell.position = go.transform.position;
                     position.x += 2f;
                     
 

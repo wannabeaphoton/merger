@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Client
 {
@@ -9,6 +10,7 @@ namespace Client
         public int health;
         public GameObject model;
         public Animator animator;
+        public GameObject healthbar;
     }
 }
 

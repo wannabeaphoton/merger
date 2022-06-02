@@ -26,11 +26,13 @@ namespace Client {
                 .Add(new SpawnMeleeSystem())
                 .Add(new MergeCheckSystem())
                 .Add(new MergeSystem())
+                .Add(new UnoccupySystem())
                 .Add(new ReoccupySystem())
-                .Add(new OccupiedSystem())
-                .Add(new AnimationSystem())
                 .Add(new ProjectileSystem())
-                
+                .Add(new AttackSystem())
+                .Add(new BossHitSystem())
+
+
                 // register your systems here, for example:
                 // .Add (new TestSystem1 ())
                 // .Add (new TestSystem2 ())

@@ -8,6 +8,6 @@ namespace Client
     {
         public ParticleSystem projectile;
         public Vector3 startpoint;
-
+        public int damage;
     }
 }

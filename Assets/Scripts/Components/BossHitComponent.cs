@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Client
-{
-    struct ReoccupyComponent
+namespace Client 
+{ 
+    struct BossHitComponent
     {
-        public Vector3 reoccupy;
+        public int damage;
     }
-
 }
 

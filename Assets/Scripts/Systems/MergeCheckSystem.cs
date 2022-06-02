@@ -10,68 +10,77 @@ namespace Client
         readonly EcsPoolInject<MergeCheckComponent> _mcheckpool = default;
         readonly EcsPoolInject<MergeComponent> _mergepool = default;
         readonly EcsPoolInject<CellComponent> _cellpool = default;
-        readonly EcsPoolInject<Drag> _dragpool = default;
-        readonly EcsFilterInject<Inc<CellComponent>> _cellfilter = default;
-        readonly EcsFilterInject<Inc<Drag, MergeCheckComponent>> _dragfilter = default;
+        readonly EcsPoolInject<DraggedComponent> _draggedpool = default;
+        readonly EcsPoolInject<UnitComponent> _unitpool = default;
+        readonly EcsFilterInject<Inc<CellComponent>, Exc<OccupiedComponent>> _cellfilter = default;
+        readonly EcsFilterInject<Inc<DraggedComponent, MergeCheckComponent>> _draggedfilter = default;
         readonly EcsPoolInject<OccupiedComponent> _occupiedpool = default;
-        readonly EcsCustomInject<Config> _config = default;
-        private Hashtable _map = new Hashtable();
+        readonly EcsFilterInject<Inc<UnitComponent>, Exc<DraggedComponent>> _unitfilter = default;
+        readonly EcsPoolInject<ReoccupyComponent> _reoccpool = default;
+        LayerMask _unitlayer = 1 << 3;
+        LayerMask _celllayer = 1 << 6;
+        RaycastHit _unitchecker, _cellchecker;
 
         public void Run(EcsSystems systems)
         {
-            _map = _config.Value.tagmap;
-            foreach (int _cellentity in _cellfilter.Value)
+            
+
+            foreach (int _unitentity in _draggedfilter.Value)
             {
-                ref var _cell = ref _cellpool.Value.Get(_cellentity);
-                foreach (int _dragentity in _dragfilter.Value)
+                ref var _unit = ref _unitpool.Value.Get(_unitentity);
+                Debug.DrawRay(_unit.model.transform.position, Vector3.down * 5f, Color.cyan);
+                if (Physics.Raycast(new Ray(_unit.model.transform.position, Vector3.down * 5f), out _unitchecker, 3f, _unitlayer))
                 {
-                    ref var _drag = ref _dragpool.Value.Get(_dragentity);
-                    if (_drag.mergecheck.collider.transform.position == _cell.cell.transform.position)
+                    foreach (int _unitcheckentity in _unitfilter.Value)
                     {
-                        if (_occupiedpool.Value.Has(_cellentity))
+                        ref var _unitcheck = ref _unitpool.Value.Get(_unitcheckentity);
+                        if (_unitchecker.collider.transform.position == _unitcheck.position)
                         {
-                            Debug.Log("Merge!");
-                            if (_drag.rigidbody.tag == _cell.unit.tag & _drag.rigidbody.tag != "T4")
+                            if (_unitcheck.tier == _unit.tier && _unitcheck.type == _unit.type && _unit.tier != 4)
                             {
-                                GameObject.Destroy(_cell.unit, 0.1f);
-                                _mergepool.Value.Add(_cellentity);
-                                ref var _mtag = ref _mergepool.Value.Get(_cellentity);
-                                _mtag.tag = _drag.rigidbody.tag;
-                                Debug.Log(_map[_mtag.tag]);
-                                _drag.rigidbody.tag = _map[_drag.rigidbody.tag].ToString();
-                                _cell.unit = _drag.rigidbody.gameObject;
-                                _drag.rigidbody.position = _cell.cell.transform.position;
+                                GameObject.Destroy(_unitcheck.model);
+                                //_unit.model.transform.position = _unitcheck.position + Vector3.up;
+                                _unit.model.transform.position = _unitcheck.position;
+                                _unit.model.GetComponent<Rigidbody>().useGravity = true;
+                                _unit.position = _unitcheck.position;
+                                _unitpool.Value.Del(_unitcheckentity);
+                                _mergepool.Value.Add(_unitentity);
                             }
                             else
                             {
-                                _drag.rigidbody.position = _drag.originposition;
-                                foreach (int _cellreentity in _cellfilter.Value)
-                                {
-                                    ref var _cellre = ref _cellpool.Value.Get(_cellreentity);
-                                    if (_drag.originposition == _cellre.cell.transform.position)
-                                    {
-                                        _occupiedpool.Value.Add(_cellreentity);
-                                        _cellre.unit = _drag.rigidbody.gameObject;
-                                    }
-
-                                }
+                                _unit.model.transform.position = _unit.position;
+                                var _reoccentity = _reoccpool.Value.GetWorld().NewEntity();
+                                ref var _reocc = ref _reoccpool.Value.Add(_reoccentity);
+                                _reocc.reoccupy = _unit.position;
                             }
                         }
-                        else
-                        {   
-                            Debug.Log("cellposition = " + _cell.cell.transform.position);
-                            Debug.Log("targetcollider = " + _drag.mergecheck.collider.transform.position);
-                            _drag.rigidbody.position = _cell.cell.transform.position;
-                            _occupiedpool.Value.Add(_cellentity);
-                            _cell.unit = _drag.rigidbody.gameObject;
-                        }
-                        _drag.rigidbody.useGravity = true;
-                        Animator anim = _drag.rigidbody.gameObject.GetComponentInChildren<Animator>();
-                        anim.Play("Idle");
-                        _dragpool.Value.Del(_dragentity);
-                        _mcheckpool.Value.Del(_dragentity);
+                        
                     }
                 }
+                else if (Physics.Raycast(new Ray(_unit.model.transform.position, Vector3.down * 5f), out _cellchecker, 3f, _celllayer))
+                {
+                    foreach (int _cellentity in _cellfilter.Value)
+                    {
+                        ref var _cell = ref _cellpool.Value.Get(_cellentity);
+                        if (_cell.position == _cellchecker.collider.transform.position)
+                        {
+                            _unit.position = _cell.position;
+                            _unit.model.transform.position = _cell.position;
+                            _occupiedpool.Value.Add(_cellentity);
+
+                        }
+                    }
+                }
+                else
+                {
+                    _unit.model.transform.position = _unit.position;
+                    var _reoccentity = _reoccpool.Value.GetWorld().NewEntity();
+                    ref var _reocc = ref _reoccpool.Value.Add(_reoccentity);
+                    _reocc.reoccupy = _unit.position;
+                }
+                _mcheckpool.Value.Del(_unitentity);
+                _draggedpool.Value.Del(_unitentity);
+                _unit.anim.Play("Idle");
             }
         }
     }
