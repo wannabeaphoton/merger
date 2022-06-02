@@ -19,3 +19,4 @@ MonoBehaviour:
   projectile: {fileID: 5909666542805671778, guid: b0cca04c794ce16409e832532e265803, type: 3}
   gridWidth: 3
   gridLength: 3
+  touchdelay: 0.05

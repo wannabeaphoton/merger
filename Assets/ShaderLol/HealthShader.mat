@@ -22,7 +22,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _health: -0.099999994
+    - _health: -3.6799998
     m_Colors:
     - _highhealthcolor: {r: 0, g: 1, b: 0, a: 1}
     - _lowhealthcolor: {r: 1, g: 0, b: 0, a: 1}

@@ -10,12 +10,11 @@ namespace Client
         readonly EcsPoolInject<MergeCheckComponent> _mcheckpool = default;
         readonly EcsPoolInject<MergeComponent> _mergepool = default;
         readonly EcsPoolInject<CellComponent> _cellpool = default;
-        readonly EcsPoolInject<DraggedComponent> _draggedpool = default;
         readonly EcsPoolInject<UnitComponent> _unitpool = default;
         readonly EcsFilterInject<Inc<CellComponent>, Exc<OccupiedComponent>> _cellfilter = default;
-        readonly EcsFilterInject<Inc<DraggedComponent, MergeCheckComponent>> _draggedfilter = default;
+        readonly EcsFilterInject<Inc<MergeCheckComponent, UnitComponent>> _mergecheckfilter = default;
         readonly EcsPoolInject<OccupiedComponent> _occupiedpool = default;
-        readonly EcsFilterInject<Inc<UnitComponent>, Exc<DraggedComponent>> _unitfilter = default;
+        readonly EcsFilterInject<Inc<UnitComponent>, Exc<MergeCheckComponent>> _unitfilter = default;
         readonly EcsPoolInject<ReoccupyComponent> _reoccpool = default;
         LayerMask _unitlayer = 1 << 3;
         LayerMask _celllayer = 1 << 6;
@@ -25,9 +24,9 @@ namespace Client
         {
             
 
-            foreach (int _unitentity in _draggedfilter.Value)
+            foreach (int _mergeentity in _mergecheckfilter.Value)
             {
-                ref var _unit = ref _unitpool.Value.Get(_unitentity);
+                ref var _unit = ref _unitpool.Value.Get(_mergeentity);
                 Debug.DrawRay(_unit.model.transform.position, Vector3.down * 5f, Color.cyan);
                 if (Physics.Raycast(new Ray(_unit.model.transform.position, Vector3.down * 5f), out _unitchecker, 3f, _unitlayer))
                 {
@@ -44,7 +43,7 @@ namespace Client
                                 _unit.model.GetComponent<Rigidbody>().useGravity = true;
                                 _unit.position = _unitcheck.position;
                                 _unitpool.Value.Del(_unitcheckentity);
-                                _mergepool.Value.Add(_unitentity);
+                                _mergepool.Value.Add(_mergeentity);
                             }
                             else
                             {
@@ -78,8 +77,7 @@ namespace Client
                     ref var _reocc = ref _reoccpool.Value.Add(_reoccentity);
                     _reocc.reoccupy = _unit.position;
                 }
-                _mcheckpool.Value.Del(_unitentity);
-                _draggedpool.Value.Del(_unitentity);
+                _mcheckpool.Value.Del(_mergeentity);
                 _unit.anim.Play("Idle");
             }
         }

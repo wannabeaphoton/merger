@@ -8,6 +8,7 @@ namespace Client
     {
         public Touch touch;
         public TouchPhase phase;
-        public Vector3 direction;
+        public Vector3 position;
+        
     }
 }

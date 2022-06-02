@@ -20,7 +20,7 @@ namespace Client
             foreach (int _projentity in _projfilter.Value)
             {
                 ref var _proj = ref _projpool.Value.Get(_projentity);
-                _proj.projectile.transform.position = Vector3.MoveTowards(_proj.projectile.transform.position, _bosspos + Vector3.up * 5f, 0.1f);
+                _proj.projectile.transform.position = Vector3.MoveTowards(_proj.projectile.transform.position, _bosspos + Vector3.up * 5f, 0.5f);
                 if (_proj.projectile.transform.position == _bosspos + Vector3.up * 5f)
                 {
                     var _hitentity = _bosshitpool.Value.GetWorld().NewEntity();

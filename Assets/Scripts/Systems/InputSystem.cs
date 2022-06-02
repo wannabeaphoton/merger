@@ -36,7 +36,7 @@ namespace Client
                     }
                     ref var _touch = ref _touchpool.Value.Get(entity);
                     _touch.phase = TouchPhase.Began;
-                    _touch.direction = Vector3.zero;
+                    _touch.position = _activetouch.position;
                     //_touch.velocity = Vector3.zero;
                     return;
                 }
@@ -52,7 +52,7 @@ namespace Client
                     }
                     ref var _touch = ref _touchpool.Value.Get(entity);
                     _touch.phase = TouchPhase.Ended;
-                    _touch.direction = Vector3.zero;
+                    _touch.position = _activetouch.position;
                     //touchComp.Velocity = Vector3.zero;
                     return;
                 }
@@ -69,7 +69,7 @@ namespace Client
 
                     
                     _touch.phase = TouchPhase.Moved;
-                    _touch.direction = _activetouch.deltaPosition;
+                    _touch.position = _activetouch.position;
                     return;
                 }
                 else if (phase == TouchPhase.Stationary)
@@ -82,7 +82,7 @@ namespace Client
                     if (_stationaryTimer >= 0.2f)
                     {
                         _touch.phase = TouchPhase.Stationary;
-                        _touch.direction = Vector3.zero;
+                        _touch.position = _activetouch.position;
                     }
                 }
             }

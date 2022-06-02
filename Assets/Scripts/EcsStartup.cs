@@ -20,7 +20,9 @@ namespace Client {
 
             _systems = new EcsSystems (new EcsWorld ());
             _systems
+                .Add(new InputSystem())
                 .Add(new GridInitSystem())
+                .Add(new RayCastSystem())
                 .Add(new DragSystem())
                 .Add(new UISystem())
                 .Add(new SpawnMeleeSystem())
